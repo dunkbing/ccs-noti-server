@@ -8,6 +8,7 @@ import (
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/messaging"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/api/option"
 )
@@ -236,6 +237,7 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Use(cors.Default())
 	router.GET("/", hello)
 	router.POST("/rescues", NewRescueRequest)
 	router.PUT("/rescues/status", ChangeRescueStatus)
