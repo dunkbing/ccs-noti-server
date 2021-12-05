@@ -14,3 +14,9 @@ const (
 	MANAGER_DEVICE_TOKENS  = "manager-device-tokens"
 	CUSTOMER_DEVICE_TOKENS = "customer-device-tokens"
 )
+
+const (
+	RESCUE                  = "rescue"
+	CUSTOMER_CANCEL_REQUEST = "customer-cancel-request"
+	GARAGE_REJECT_REQUEST   = "garage-reject-request"
+)

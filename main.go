@@ -36,13 +36,19 @@ func hello(c *gin.Context) {
 func NewRescueRequest(c *gin.Context) {
 	var rescueRequest RescueRequestModel
 	if err := c.BindJSON(&rescueRequest); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 	tokens, err := getDeviceTokens(firestoreClient, c.Request.Context(), MANAGER_DEVICE_TOKENS, fmt.Sprintf("%v", rescueRequest.GarageId))
 
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 
@@ -53,17 +59,21 @@ func NewRescueRequest(c *gin.Context) {
 			Body:  fmt.Sprintf("%v", rescueRequest.Description),
 		},
 		Data: map[string]string{
-			"type": "rescue",
+			"type": RESCUE,
 		},
 	}
 
 	br, err := msgClient.SendMulticast(context.Background(), message)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 
 	c.JSON(200, gin.H{
+		"status":  "success",
 		"message": fmt.Sprintf("success: %v", br.SuccessCount),
 	})
 }
@@ -71,13 +81,19 @@ func NewRescueRequest(c *gin.Context) {
 func GarageRejectRequest(c *gin.Context) {
 	var rejectRequest GarageRejectRequestModel
 	if err := c.BindJSON(&rejectRequest); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 	tokens, err := getDeviceTokens(firestoreClient, c.Request.Context(), CUSTOMER_DEVICE_TOKENS, fmt.Sprintf("%v", rejectRequest.CustomerId))
 
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 
@@ -88,17 +104,21 @@ func GarageRejectRequest(c *gin.Context) {
 			Body:  fmt.Sprintf("%v", rejectRequest.RejectReason),
 		},
 		Data: map[string]string{
-			"type": "rescue",
+			"type": GARAGE_REJECT_REQUEST,
 		},
 	}
 
 	br, err := msgClient.SendMulticast(context.Background(), message)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 
 	c.JSON(200, gin.H{
+		"status":  "success",
 		"message": fmt.Sprintf("success: %v", br.SuccessCount),
 	})
 }
@@ -106,13 +126,19 @@ func GarageRejectRequest(c *gin.Context) {
 func CustomerCancelRequest(c *gin.Context) {
 	var rejectRequest CustomerCancelRequestModel
 	if err := c.BindJSON(&rejectRequest); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 	tokens, err := getDeviceTokens(firestoreClient, c.Request.Context(), MANAGER_DEVICE_TOKENS, fmt.Sprintf("%v", rejectRequest.GarageId))
 
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 
@@ -123,17 +149,21 @@ func CustomerCancelRequest(c *gin.Context) {
 			Body:  fmt.Sprintf("%v", rejectRequest.RejectReason),
 		},
 		Data: map[string]string{
-			"type": "rescue",
+			"type": CUSTOMER_CANCEL_REQUEST,
 		},
 	}
 
 	br, err := msgClient.SendMulticast(context.Background(), message)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status": "error",
+			"error":  err.Error(),
+		})
 		return
 	}
 
 	c.JSON(200, gin.H{
+		"status":  "success",
 		"message": fmt.Sprintf("success: %v", br.SuccessCount),
 	})
 }
@@ -141,12 +171,18 @@ func CustomerCancelRequest(c *gin.Context) {
 func ChangeRescueStatus(c *gin.Context) {
 	var rescueRequest ChangeRescueStatusRequestModel
 	if err := c.BindJSON(&rescueRequest); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 	tokens, err := getDeviceTokens(firestoreClient, c.Request.Context(), CUSTOMER_DEVICE_TOKENS, fmt.Sprintf("%v", rescueRequest.CustomerId))
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "success",
+			"message": err.Error(),
+		})
 		return
 	}
 
@@ -173,11 +209,15 @@ func ChangeRescueStatus(c *gin.Context) {
 
 	br, err := msgClient.SendMulticast(context.Background(), message)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(400, gin.H{
+			"status":  "error",
+			"message": err.Error(),
+		})
 		return
 	}
 
 	c.JSON(200, gin.H{
+		"status":  "success",
 		"message": fmt.Sprintf("success: %v", br.SuccessCount),
 	})
 }

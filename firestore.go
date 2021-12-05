@@ -15,10 +15,14 @@ func getDeviceTokens(db *firestore.Client, ctx context.Context, coll, doc string
 	}
 	if snapshot.Exists() {
 		data := snapshot.Data()
-		for _, token := range data["tokens"].([]interface{}) {
-			tokens = append(tokens, token.(string))
+		if data["tokens"] != nil {
+			for _, token := range data["tokens"].([]interface{}) {
+				tokens = append(tokens, token.(string))
+			}
+			return tokens, nil
+		} else {
+			return nil, errors.New("no tokens found")
 		}
-		return tokens, nil
 	} else {
 		return nil, errors.New("no data found")
 	}
