@@ -29,6 +29,10 @@ func initializeAppWithServiceAccount() *firebase.App {
 	return app
 }
 
+func hello(c *gin.Context) {
+	c.JSON(200, gin.H{"message": "hello"})
+}
+
 func newRescueRequest(c *gin.Context) {
 	var rescueRequest RescueRequest
 	if err := c.BindJSON(&rescueRequest); err != nil {
@@ -52,7 +56,6 @@ func newRescueRequest(c *gin.Context) {
 			Title: "Yêu cầu cứu hộ mới",
 			Body:  fmt.Sprintf("%v", rescueRequest.Description),
 		},
-		Android: &messaging.AndroidConfig{},
 	}
 
 	br, err := msgClient.SendMulticast(context.Background(), message)
@@ -84,6 +87,7 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.GET("/", hello)
 	router.POST("/rescues", newRescueRequest)
 	router.Run(":8080")
 }
